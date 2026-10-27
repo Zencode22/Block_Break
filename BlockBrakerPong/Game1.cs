@@ -44,22 +44,22 @@ namespace BlockBrakerPong
         public GameState State { get; private set; } = GameState.Title;
 
         // ---- Managers ------------------------------------------------------
-        public GraphicsDeviceManager Graphics { get; private set; }
-        public SpriteBatch SpriteBatch { get; private set; }
-        public SoundManager Sounds { get; private set; }
-        public ScoreManager Scores { get; private set; }
+        public GraphicsDeviceManager Graphics { get; private set; } = null!;
+        public SpriteBatch SpriteBatch { get; private set; } = null!;
+        public SoundManager Sounds { get; private set; } = null!;
+        public ScoreManager Scores { get; private set; } = null!;
 
-        public Paddle PlayerPaddle { get; private set; }
-        public Ball TheBall { get; private set; }
+        public Paddle PlayerPaddle { get; private set; } = null!;
+        public Ball TheBall { get; private set; } = null!;
         public List<Block> Blocks { get; private set; } = new List<Block>();
         public List<Particle> Particles { get; private set; } = new List<Particle>();
 
         public int CurrentLevel { get; private set; } = 1;
         public const int MaxLevel = 4;
 
-        private Texture2D _white;       // 1x1 pixel used for every rectangle
-        private SpriteFont _gameFont;   // big HUD font
-        private SpriteFont _buttonFont; // small info font
+        private Texture2D _white = null!;       // 1x1 pixel used for every rectangle
+        private SpriteFont _gameFont = null!;   // big HUD font
+        private SpriteFont _buttonFont = null!; // small info font
         private KeyboardState _prevKeys;
         private float _flashTimer;      // brief screen flash on level clear
         private double _serveDelay;     // countdown between serve and launch
@@ -106,7 +106,6 @@ namespace BlockBrakerPong
             int cols = 10;
             int rows = Mathf.Clamp(3 + level, 4, 7);
 
-            float marginX = WallThickness + 26;
             float topY = ServeZoneTop + 30;
             float blockW = 58;
             float blockH = 22;
@@ -362,7 +361,6 @@ namespace BlockBrakerPong
         {
             string score = $"SCORE {Scores.Score}";
             string hi = $"HI {Scores.HighScore}";
-            string lives = "LIVES ";
             string level = $"LEVEL {CurrentLevel}/{MaxLevel}";
 
             SpriteBatch.DrawString(_buttonFont, score, new Vector2(WallThickness + 16, WallThickness + 10), TextColor);
@@ -372,7 +370,11 @@ namespace BlockBrakerPong
             var lvSize = _buttonFont.MeasureString(level);
             SpriteBatch.DrawString(_buttonFont, level, new Vector2(CourtWidth / 2 - lvSize.X / 2, WallThickness + 10), DimWhite);
 
-            // Lives as little paddles on the right side of the HUD
+            // Lives are drawn as little paddle pips on the right side of the HUD.
+            string livesLabel = "LIVES";
+            var livesSize = _buttonFont.MeasureString(livesLabel);
+            SpriteBatch.DrawString(_buttonFont, livesLabel,
+                new Vector2(CourtWidth - WallThickness - 150 - 12 - livesSize.X, WallThickness + 28), DimWhite);
             for (int i = 0; i < ScoreManager.MaxLives; i++)
             {
                 Color c = i < Scores.Lives ? Accent : new Color(40, 40, 48);
