@@ -45,7 +45,7 @@ namespace BlockBrakerPong
 
             // Body: damaged bricks fade toward the dim court color.
             float healthFactor = (float)Hp / MaxHp;
-            Color body = Color.Lerp(Game1.Bg * 0.9f + BaseColor * 0.1f, BaseColor, healthFactor);
+            Color body = Color.Lerp(Game1.Bg * 0.9f, BaseColor, healthFactor);
             spriteBatch.Draw(pixel, b, body);
 
             // Top bevel highlight + bottom shade line.

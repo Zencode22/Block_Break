@@ -18,7 +18,7 @@ namespace BlockBrakerPong
         private readonly SoundEffect _gameOver;
         private readonly SoundEffect _levelClear;
 
-        public SoundManager(ContentContentManager content)
+        public SoundManager(ContentManager content)
         {
             _ping1 = content.Load<SoundEffect>("ping1");
             _ping2 = content.Load<SoundEffect>("ping2");

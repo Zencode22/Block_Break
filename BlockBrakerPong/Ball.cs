@@ -54,7 +54,7 @@ namespace BlockBrakerPong
         {
             AttachedToPaddle = false;
             float angle = Mathf.RandomRange(-0.45f, 0.45f); // radians off vertical
-            Velocity = new Vector2(System.Math.Sin(angle), directionY * System.Math.Cos(angle)) * _speed;
+            Velocity = new Vector2(Mathf.Sin(angle), directionY * Mathf.Cos(angle)) * _speed;
         }
 
         public void Update(float elapsed)
@@ -127,10 +127,10 @@ namespace BlockBrakerPong
 
                 // Paddle motion adds english, classic Pong style.
                 Velocity.X += paddle.VelocityX * 0.25f;
-                float speed = System.Math.Min(_speed * 1.02f, MaxSpeed);
+                float speed = Mathf.Min(_speed * 1.02f, MaxSpeed);
                 _speed = speed;
 
-                Velocity = new Vector2(System.Math.Sin(angle), -System.Math.Abs(System.Math.Cos(angle))) * speed;
+                Velocity = new Vector2(Mathf.Sin(angle), -Mathf.Abs(Mathf.Cos(angle))) * speed;
                 Position.Y = pb.Top - Size - 1;
 
                 _game.Sounds.PlayPaddleHit();

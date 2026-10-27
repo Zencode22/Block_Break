@@ -19,5 +19,10 @@ namespace BlockBrakerPong
         /// <summary>Random float in [min,max).</summary>
         public static float RandomRange(float min, float max) =>
             min + (float)_rng.NextDouble() * (max - min);
+
+        public static float Sin(float a) => (float)System.Math.Sin(a);
+        public static float Cos(float a) => (float)System.Math.Cos(a);
+        public static float Abs(float a) => System.Math.Abs(a);
+        public static float Min(float a, float b) => System.Math.Min(a, b);
     }
 }
