@@ -13,6 +13,15 @@
 
 #---------------------------------- Content ---------------------------------#
 
+# The raw font file is referenced by the .spritefont files below via their
+# <FontName> element. It must NOT have a /build: entry, otherwise mgcb tries to
+# import it as content and fails (MSB3073).
+#begin dejavusansmono.ttf
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Color
+
 #begin buttonfont.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
