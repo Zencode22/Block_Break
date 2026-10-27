@@ -1,0 +1,8 @@
+*.xnb
+obj/
+bin/
+project.assets.json
+project.nuget.cache
+*.nuget.g.props
+*.nuget.g.targets
+*.nuget.dgspec.json
