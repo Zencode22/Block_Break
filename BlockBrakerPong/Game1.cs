@@ -293,7 +293,7 @@ namespace BlockBrakerPong
                 float angle = (float)(Mathf.RandomFloat() * System.Math.PI * 2);
                 float speed = 60 + Mathf.RandomFloat() * 180;
                 Particles.Add(new Particle(position,
-                    new Vector2(System.Math.Cos(angle) * speed, System.Math.Sin(angle) * speed),
+                    new Vector2(Mathf.Cos(angle) * speed, Mathf.Sin(angle) * speed),
                     color, 0.4f + Mathf.RandomFloat() * 0.4f));
             }
         }
