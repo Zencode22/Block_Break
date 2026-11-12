@@ -98,13 +98,26 @@ namespace BlockBrakerPong
 
         // ---- Level construction -------------------------------------------
 
-        /// <summary>Builds the brick field for the given level (1..MaxLevel).</summary>
+        /// <summary>
+        /// Builds the brick field for the given level (1..MaxLevel). Each level
+        /// has its own layout and difficulty curve:
+        ///   Level 1 — easy: a plain wall of bricks, every block dies in one hit.
+        ///   Level 2 — medium: more rows, the middle band takes two hits.
+        ///   Level 3 — hard: hollow pattern with gaps; core bricks take three hits.
+        ///   Level 4 — brutal: full pyramid fortress, up to four hits at the peak.
+        /// </summary>
         public void BuildLevel(int level)
         {
             Blocks.Clear();
 
             int cols = 10;
-            int rows = Mathf.Clamp(3 + level, 4, 7);
+            int rows = level switch
+            {
+                1 => 4,     // easy starter wall
+                2 => 6,     // taller field
+                3 => 7,     // tall, hollowed-out pattern
+                _ => 8,     // pyramid fortress
+            };
 
             float topY = ServeZoneTop + 30;
             float blockW = 58;
@@ -118,21 +131,61 @@ namespace BlockBrakerPong
             {
                 for (int c = 0; c < cols; c++)
                 {
-                    // Skip some blocks on later levels to carve Pong-ish patterns.
-                    if (level >= 3 && (r + c) % 7 == 3) continue;
-                    if (level >= 4 && ((r * cols + c) % 11 == 5)) continue;
+                    // ---- Per-level layout & HP ------------------------------
+                    int hp;
+                    switch (level)
+                    {
+                        case 1:
+                            // Pure beginner level: nothing here but breakable-in-one-hit blocks.
+                            hp = 1;
+                            break;
+
+                        case 2:
+                            // Two middle rows are double-tough.
+                            hp = (r == 2 || r == 3) ? 2 : 1;
+                            break;
+
+                        case 3:
+                            // Carve a hollow diamond so the ball can pass through.
+                            if (IsLevel3Gap(r, c, rows, cols)) continue;
+                            // Outer ring takes two hits; the inner shell is armored triple-HP stone.
+                            int ring = System.Math.Min(System.Math.Min(r, rows - 1 - r),
+                                                       System.Math.Min(c, cols - 1 - c));
+                            hp = ring >= 1 ? 3 : 2;
+                            break;
+
+                        default:
+                            // Level 4: pyramid fortress — edges thin out, peak is 4 HP.
+                            if (IsLevel4Gap(r, c, rows, cols)) continue;
+                            int distFromEdge = System.Math.Min(r, rows - 1 - r);
+                            hp = 1 + System.Math.Min(distFromEdge, 3);
+                            break;
+                    }
 
                     var pos = new Vector2(startX + c * (blockW + gap),
                                           topY + r * (blockH + gap));
-
-                    // Outer rows are weak (1 hit), inner rows tougher.
-                    int distFromEdge = System.Math.Min(r, rows - 1 - r);
-                    int hp = 1 + System.Math.Min(distFromEdge, 2);
 
                     Color color = RowColors[r % RowColors.Length];
                     Blocks.Add(new Block(pos, new Point((int)blockW, (int)blockH), hp, color));
                 }
             }
+        }
+
+        /// <summary>Hollow-diamond cutout used by level 3.</summary>
+        private static bool IsLevel3Gap(int r, int c, int rows, int cols)
+        {
+            int midR = (rows - 1) / 2;
+            int midC = (cols - 1) / 2;
+            int manhattan = System.Math.Abs(r - midR) + System.Math.Abs(c - midC);
+            return manhattan <= 2;   // empty pocket in the heart of the wall
+        }
+
+        /// <summary>Sloped sides that turn level 4's field into a pyramid.</summary>
+        private static bool IsLevel4Gap(int r, int c, int rows, int cols)
+        {
+            int step = rows / 2;                       // how many columns taper per row
+            int fromMid = System.Math.Abs(c - (cols - 1) / 2);
+            return fromMid > step;                     // outside the pyramid slope
         }
 
         /// <summary>Puts the ball back on the player paddle, waiting to be launched.</summary>
